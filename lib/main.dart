@@ -82,9 +82,21 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                           ),
                           Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
-                              Text(t.title),
-                              Text("${t.date}"),
+                              Text(
+                                t.title,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                "${t.date}",
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
                             ],
                           )
                         ],
