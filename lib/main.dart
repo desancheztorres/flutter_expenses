@@ -73,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                             ),
                             child: Text(
-                              "${t.amount}",
+                              "A: \$${t.amount}",
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20,
