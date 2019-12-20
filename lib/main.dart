@@ -68,12 +68,17 @@ class _MyHomePageState extends State<MyHomePage> {
                             padding: EdgeInsets.all(10.0),
                             decoration: BoxDecoration(
                               border: Border.all(
-                                color: Colors.black,
+                                color: Colors.purple,
                                 width: 2,
                               ),
                             ),
                             child: Text(
                               "${t.amount}",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                color: Colors.purple,
+                              ),
                             ),
                           ),
                           Column(
