@@ -45,7 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text("Flutter app"),
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        // mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Container(
@@ -54,6 +54,28 @@ class _MyHomePageState extends State<MyHomePage> {
               color: Colors.blue,
               child: Text('CHART!'),
               elevation: 5,
+            ),
+          ),
+          Card(
+            elevation: 5,
+            child: Container(
+              padding: EdgeInsets.all(10.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  TextField(
+                    decoration: InputDecoration(labelText: 'Title'),
+                  ),
+                  TextField(
+                    decoration: InputDecoration(labelText: 'Amount'),
+                  ),
+                  FlatButton(
+                    textColor: Colors.purple,
+                    child: Text('Add Transaction'),
+                    onPressed: () {},
+                  )
+                ],
+              ),
             ),
           ),
           Column(
