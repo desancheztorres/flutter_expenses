@@ -1,5 +1,6 @@
 import 'package:expenses/transaction.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 void main() => runApp(MyApp());
 
@@ -92,7 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 ),
                               ),
                               Text(
-                                "${t.date}",
+                                "${DateFormat.yMMMd().format(t.date)}",
                                 style: TextStyle(
                                   color: Colors.grey,
                                 ),
