@@ -61,6 +61,17 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Row(
                         children: <Widget>[
                           Container(
+                            margin: EdgeInsets.symmetric(
+                              vertical: 10,
+                              horizontal: 15,
+                            ),
+                            padding: EdgeInsets.all(10.0),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.black,
+                                width: 2,
+                              ),
+                            ),
                             child: Text(
                               "${t.amount}",
                             ),
