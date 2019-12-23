@@ -1,3 +1,4 @@
+import 'package:expenses/widgets/user_transactions.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -42,6 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
               elevation: 5,
             ),
           ),
+          UserTransactions(),
         ],
       ),
     );
