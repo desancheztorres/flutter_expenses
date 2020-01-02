@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class NewTransaction extends StatefulWidget {
   final Function addTx;
@@ -10,9 +11,9 @@ class NewTransaction extends StatefulWidget {
 }
 
 class _NewTransactionState extends State<NewTransaction> {
-  final titleController = TextEditingController();
-
-  final amountController = TextEditingController();
+  final _titleController = TextEditingController();
+  final _amountController = TextEditingController();
+  DateTime _selectedDate;
 
   @override
   Widget build(BuildContext context) {
@@ -24,23 +25,27 @@ class _NewTransactionState extends State<NewTransaction> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
             TextField(
-              controller: titleController,
+              controller: _titleController,
               decoration: InputDecoration(labelText: 'Title'),
-              onSubmitted: (_) => submitData(),
+              onSubmitted: (_) => _submitData(),
               // onChanged: (String val) => titleInput = val,
             ),
             TextField(
-              controller: amountController,
+              controller: _amountController,
               decoration: InputDecoration(labelText: 'Amount'),
               keyboardType: TextInputType.number,
-              onSubmitted: (_) => submitData(),
+              onSubmitted: (_) => _submitData(),
               // onChanged: (String val) => amountInput = val,
             ),
             Container(
               height: 70,
               child: Row(
                 children: <Widget>[
-                  Text('No Date chosen!'),
+                  Expanded(
+                    child: Text(_selectedDate == null
+                        ? 'No Date chosen!'
+                        : 'Picked Date: ${DateFormat.yMd().format(_selectedDate)}'),
+                  ),
                   FlatButton(
                     textColor: Theme.of(context).primaryColor,
                     child: Text(
@@ -49,7 +54,7 @@ class _NewTransactionState extends State<NewTransaction> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: _presentDatePicker,
                   )
                 ],
               ),
@@ -58,7 +63,7 @@ class _NewTransactionState extends State<NewTransaction> {
               color: Theme.of(context).primaryColor,
               textColor: Theme.of(context).textTheme.button.color,
               child: Text('Add Transaction'),
-              onPressed: submitData,
+              onPressed: _submitData,
             )
           ],
         ),
@@ -66,11 +71,26 @@ class _NewTransactionState extends State<NewTransaction> {
     );
   }
 
-  void submitData() {
-    if (amountController.text.isEmpty) return;
+  void _presentDatePicker() {
+    showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2019),
+      lastDate: DateTime.now(),
+    ).then((pickedDate) {
+      if (pickedDate == null) return;
 
-    final enteredTitle = titleController.text;
-    final enteredAmount = double.parse(amountController.text);
+      setState(() {
+        _selectedDate = pickedDate;
+      });
+    });
+  }
+
+  void _submitData() {
+    if (_amountController.text.isEmpty) return;
+
+    final enteredTitle = _titleController.text;
+    final enteredAmount = double.parse(_amountController.text);
 
     if (enteredTitle.isEmpty || enteredAmount < 0) return;
 
