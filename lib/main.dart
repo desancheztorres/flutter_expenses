@@ -1,10 +1,10 @@
-import 'package:expenses/widgets/chart.dart';
-import 'package:expenses/widgets/new_transaction.dart';
+import 'package:expenses/transaction_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'models/transaction.dart';
-import 'transaction_list.dart';
+import './widgets/new_transaction.dart';
+import './widgets/chart.dart';
+import './models/transaction.dart';
 
 void main() {
   // SystemChrome.setPreferredOrientations([
@@ -30,9 +30,7 @@ class MyApp extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
                 ),
-                button: TextStyle(
-                  color: Colors.white,
-                ),
+                button: TextStyle(color: Colors.white),
               ),
           appBarTheme: AppBarTheme(
             textTheme: ThemeData.light().textTheme.copyWith(
@@ -49,6 +47,8 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
+  // String titleInput;
+  // String amountInput;
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -64,11 +64,10 @@ class _MyHomePageState extends State<MyHomePage> {
     // Transaction(
     //   id: 't2',
     //   title: 'Weekly Groceries',
-    //   amount: 16.43,
+    //   amount: 16.53,
     //   date: DateTime.now(),
-    // )
+    // ),
   ];
-
   bool _showChart = false;
 
   List<Transaction> get _recentTransactions {
@@ -81,60 +80,102 @@ class _MyHomePageState extends State<MyHomePage> {
     }).toList();
   }
 
+  void _addNewTransaction(
+      String txTitle, double txAmount, DateTime chosenDate) {
+    final newTx = Transaction(
+      title: txTitle,
+      amount: txAmount,
+      date: chosenDate,
+      id: DateTime.now().toString(),
+    );
+
+    setState(() {
+      _userTransactions.add(newTx);
+    });
+  }
+
+  void _startAddNewTransaction(BuildContext ctx) {
+    showModalBottomSheet(
+      context: ctx,
+      builder: (_) {
+        return GestureDetector(
+          onTap: () {},
+          child: NewTransaction(_addNewTransaction),
+          behavior: HitTestBehavior.opaque,
+        );
+      },
+    );
+  }
+
+  void _deleteTransaction(String id) {
+    setState(() {
+      _userTransactions.removeWhere((tx) => tx.id == id);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final _appBar = AppBar(
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+    final appBar = AppBar(
       title: Text(
-        "Personal Expenses",
-        style: TextStyle(fontFamily: 'Open Sans'),
+        'Personal Expenses',
       ),
       actions: <Widget>[
         IconButton(
           icon: Icon(Icons.add),
           onPressed: () => _startAddNewTransaction(context),
-        )
+        ),
       ],
     );
-
+    final txListWidget = Container(
+      height: (MediaQuery.of(context).size.height -
+              appBar.preferredSize.height -
+              MediaQuery.of(context).padding.top) *
+          0.7,
+      child: TransactionList(_userTransactions, _deleteTransaction),
+    );
     return Scaffold(
-      appBar: _appBar,
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           // mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text("Show chart"),
-                Switch(
-                  value: _showChart,
-                  onChanged: (bool newValue) {
-                    setState(() {
-                      _showChart = newValue;
-                    });
-                  },
-                ),
-              ],
-            ),
-            _showChart
-                ? Container(
-                    height: (MediaQuery.of(context).size.height -
-                            _appBar.preferredSize.height -
-                            MediaQuery.of(context).padding.top) *
-                        0.7,
-                    child: Container(
-                      child: Chart(_recentTransactions),
-                    ),
-                  )
-                : Container(
-                    height: (MediaQuery.of(context).size.height -
-                            _appBar.preferredSize.height -
-                            MediaQuery.of(context).padding.top) *
-                        0.7,
-                    child:
-                        TransactionList(_userTransactions, _deleteTransaction),
+            if (isLandscape)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text('Show Chart'),
+                  Switch(
+                    value: _showChart,
+                    onChanged: (val) {
+                      setState(() {
+                        _showChart = val;
+                      });
+                    },
                   ),
+                ],
+              ),
+            if (!isLandscape)
+              Container(
+                height: (MediaQuery.of(context).size.height -
+                        appBar.preferredSize.height -
+                        MediaQuery.of(context).padding.top) *
+                    0.3,
+                child: Chart(_recentTransactions),
+              ),
+            if (!isLandscape) txListWidget,
+            if (isLandscape)
+              _showChart
+                  ? Container(
+                      height: (MediaQuery.of(context).size.height -
+                              appBar.preferredSize.height -
+                              MediaQuery.of(context).padding.top) *
+                          0.7,
+                      child: Chart(_recentTransactions),
+                    )
+                  : txListWidget
           ],
         ),
       ),
@@ -144,37 +185,5 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () => _startAddNewTransaction(context),
       ),
     );
-  }
-
-  void _startAddNewTransaction(BuildContext ctx) {
-    showModalBottomSheet(
-      context: ctx,
-      builder: (_) {
-        return GestureDetector(
-          onTap: () {},
-          behavior: HitTestBehavior.opaque,
-          child: NewTransaction(_addNewTransaction),
-        );
-      },
-    );
-  }
-
-  void _addNewTransaction(String title, double amount, DateTime chosenDate) {
-    final newTx = Transaction(
-      id: DateTime.now().toString(),
-      title: title,
-      amount: amount,
-      date: chosenDate,
-    );
-
-    setState(() {
-      _userTransactions.add(newTx);
-    });
-  }
-
-  void _deleteTransaction(String id) {
-    setState(() {
-      _userTransactions.removeWhere((tx) => tx.id == id);
-    });
   }
 }
